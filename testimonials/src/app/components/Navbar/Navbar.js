@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import Image from "next/image";
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false); // Track menu state
   const router = useRouter();
@@ -12,10 +14,12 @@ export default function Navbar() {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo and Title */}
         <div className="flex items-center">
-          <img
+          <Image
             src="/favicon.ico" // Use your logo path here
             alt="Logo"
             className="h-8 w-8 mr-2"
+            width={100}
+            height={100}
           />
           <span className="text-white text-lg font-semibold">Testimonials</span>
         </div>
