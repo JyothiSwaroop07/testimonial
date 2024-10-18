@@ -4,10 +4,21 @@
 
 import Navbar from "./components/Navbar/Navbar";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../lib/firebase";
 
 export default function App() {
 
   const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) router.push("/Home"); // Redirect if not logged in
+    });
+
+    return () => unsubscribe();
+  }, [router]);
 
   return (
     <div className="w-[100vw]">

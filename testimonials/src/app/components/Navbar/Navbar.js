@@ -5,22 +5,17 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import {auth} from '../../../lib/firebase'
+import { useAuth } from "@/lib/useAuth";
 
 import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false); // Track menu state
-  const [user, setUser] = useState(null);
+  
   const router = useRouter();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) setUser(user);
-      // else router.push("/Login"); // Redirect if not logged in
-    });
 
-    return () => unsubscribe();
-  }, [router]);
+  const {user} = useAuth();
 
   const handleLogout = async () => {
     await signOut(auth);
