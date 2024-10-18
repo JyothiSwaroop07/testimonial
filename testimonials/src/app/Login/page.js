@@ -26,7 +26,7 @@ const Login = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        router.replace("/dashboard"); // Redirect to dashboard if already logged in
+        router.replace("/Home"); // Redirect to dashboard if already logged in
       }
       setLoading(false);
     });

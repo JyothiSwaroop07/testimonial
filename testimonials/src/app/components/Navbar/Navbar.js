@@ -16,7 +16,7 @@ export default function Navbar() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) setUser(user);
-      else router.push("/Login"); // Redirect if not logged in
+      else router.push("/"); // Redirect if not logged in
     });
 
     return () => unsubscribe();

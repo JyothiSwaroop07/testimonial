@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) setUser(user);
-      else router.push("/Login"); // Redirect if not logged in
+      else router.push("/"); // Redirect if not logged in
     });
 
     return () => unsubscribe();
@@ -21,7 +21,7 @@ const Home = () => {
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push("/Login");
+    router.push("/");
   };
 
   return (
@@ -29,12 +29,7 @@ const Home = () => {
     <Navbar/>
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h1 className="text-3xl font-bold mb-4">Welcome, {user?.displayName}</h1>
-      <button
-        onClick={handleLogout}
-        className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-500"
-      >
-        Logout
-      </button>
+      
     </div>
     </>
   );
