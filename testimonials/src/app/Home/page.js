@@ -125,8 +125,8 @@ const Home = () => {
             <div className="cards flex flex-col lg:flex-row items-center gap-10">
 
                 {
-                  spaces.map((space)=>(
-                    <div className="bg-white shadow-md rounded-lg flex flex-col justify-between gap-6 p-10 md:p-12 ">
+                  spaces.map((space, index)=>(
+                    <div key={index} className="bg-white shadow-md rounded-lg flex flex-col justify-between gap-6 p-10 md:p-12 ">
                     <div className="flex justify-between items-center gap-12">
                       <h3 className="text-xl font-semibold text-gray-700">{space.name}</h3>
                       <BsThreeDots className="text-3xl text-[#091057]" />
