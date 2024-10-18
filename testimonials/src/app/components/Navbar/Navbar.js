@@ -2,12 +2,31 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import {auth} from '../../../lib/firebase'
 
 import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false); // Track menu state
+  const [user, setUser] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) setUser(user);
+      else router.push("/Login"); // Redirect if not logged in
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push("/Login");
+  };
+
 
   return (
     <nav className="bg-[#091057] p-4 shadow-md">
@@ -38,7 +57,7 @@ export default function Navbar() {
         </div>
 
         {/* Login/Signup Buttons */}
-        <div className="hidden md:flex space-x-4">
+        { !user ? <div className="hidden md:flex space-x-4">
           <button
             onClick={() => router.push("/Login")}
             className="bg-none text-white px-4 py-2 rounded-md hover:bg-none transition"
@@ -52,6 +71,16 @@ export default function Navbar() {
             Signup
           </button>
         </div>
+        :
+        <div className="hidden md:flex space-x-4">
+            <button
+            onClick={handleLogout}
+            className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-500"
+          >
+            Logout
+          </button>
+        </div>
+      }
 
         {/* Hamburger Menu for Small Screens */}
         <button
@@ -88,7 +117,7 @@ export default function Navbar() {
             </a>
           ))}
 
-          <div className="flex space-x-4 mt-4">
+          {!user ? <div className="flex space-x-4 mt-4">
             <button
               onClick={() => router.push("/Login")}
               className="bg-white text-blue-600 w-full py-2 rounded-md hover:bg-gray-200 transition"
@@ -102,6 +131,17 @@ export default function Navbar() {
               Signup
             </button>
           </div>
+          :
+          <div className="flex space-x-4 mt-4">
+            <button
+                onClick={handleLogout}
+                className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-500"
+              >
+                Logout
+              </button>
+          </div>
+        } 
+
         </div>
       )}
     </nav>
