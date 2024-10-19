@@ -44,7 +44,6 @@ const Login = () => {
         uid: user.uid,
         email: user.email,
         name: user.displayName || "Anonymous",
-        spaces: [],
         createdAt: serverTimestamp(),
       });
       console.log("User document created.");
