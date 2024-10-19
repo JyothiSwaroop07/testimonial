@@ -24,7 +24,7 @@ export default function Navbar() {
 
 
   return (
-    <nav className="bg-[#091057] p-4 shadow-md">
+    <nav className="bg-gray-900 p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo and Title */}
         <div className="flex items-center">
@@ -43,7 +43,8 @@ export default function Navbar() {
           {["Home", "About", "Services", "Contact"].map((name) => (
             <a
               key={name}
-              href={`#${name.toLowerCase()}`}
+              href={`/${name}`}
+              
               className="text-white hover:text-gray-300 transition"
             >
               {name}
