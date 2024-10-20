@@ -3,11 +3,50 @@ import React, { useState } from "react";
 import { CiVideoOn } from "react-icons/ci";
 import { FaPen } from "react-icons/fa";
 
-const TestimonialForm = ({ space }) => {
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth, db } from "../../../lib/firebase"; // Consolidate firebase imports
+import { doc, getDoc, collection, getDocs, query, where, setDoc } from "firebase/firestore";
+import { useAuth } from "../../../lib/useAuth";
+
+import { useEffect } from "react";
+
+const TestimonialForm = ({ space, spaceid }) => {
+    console.log(spaceid)
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
+    const [text, setText] = useState("");
+    const [video, setVideo] = useState(""); 
+    const [rating, setRating] = useState(0);
+
+
+    
+
+
+    const handleSubmit = async() => {
+      const testimonialId = crypto.randomUUID();
+      
+      try{
+        const testimonialRef = doc(collection(db, "testimonials"));
+        await setDoc(testimonialRef, {
+          uid: testimonialId,
+          spaceId: spaceid,
+          name,
+          email,
+          address,
+          text,
+          video,
+          rating,
+          createdAt: new Date().toISOString(),
+        });
+        console.log("Testimonial added");
+        
+      } catch(error){
+        console.log("error submitting testimonial", error)
+      }
+    }
+    
 
   return (
     <div className="p-10 flex flex-col justify-center items-center">
@@ -83,7 +122,7 @@ const TestimonialForm = ({ space }) => {
         </div>
       )}
 
-      <button className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-500 my-10">
+      <button className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-500 my-10" onClick={handleSubmit}>
         Send The Testimonial
       </button>
 

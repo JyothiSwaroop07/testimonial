@@ -13,6 +13,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { FaPlusCircle } from "react-icons/fa";
+import { useRouter } from 'next/navigation';
 
 const questionList = [
     { id: 1, question: 'Who are you / what are you working on?' },
@@ -28,6 +29,8 @@ const Page = () => {
     const [header , setHeader] = useState('Header goes here');
     const [customMessage , setCustomMessage] = useState('Your custom message goes here');
 
+    const router = useRouter();
+
     const [isNameEnabled, setIsNameEnabled] = useState(true);     
     const [isEmailEnabled, setIsEmailEnabled] = useState(false);   
     const [isAddressEnabled, setIsAddressEnabled] = useState(false); 
@@ -35,6 +38,8 @@ const Page = () => {
     const handleNameChange = (event) => setIsNameEnabled(event.target.checked);
     const handleEmailChange = (event) => setIsEmailEnabled(event.target.checked);
     const handleAddressChange = (event) => setIsAddressEnabled(event.target.checked);
+
+    
 
     const addSpaceToUser = async (newSpace) => {
         try {
@@ -70,6 +75,8 @@ const Page = () => {
         const userId = user.uid; 
       
         await addSpaceToUser(newSpace); 
+        
+        router.push("/Home");
       };
 
       const addQuestion = () => {
