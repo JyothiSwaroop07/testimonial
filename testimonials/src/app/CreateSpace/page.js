@@ -8,12 +8,13 @@ import { FaPen } from "react-icons/fa";
 import { db } from '../../lib/firebase'; // Import Firestore
 import { useAuth } from '../../lib/useAuth'; // Custom hook for authentication
 import { doc, updateDoc, arrayUnion, collection, addDoc } from 'firebase/firestore'; // Import Firestore functions
-
+import successMeme from './successMeme.jpg';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { FaPlusCircle } from "react-icons/fa";
 import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 
 const questionList = [
     { id: 1, question: 'Who are you / what are you working on?' },
@@ -39,7 +40,8 @@ const Page = () => {
     const handleEmailChange = (event) => setIsEmailEnabled(event.target.checked);
     const handleAddressChange = (event) => setIsAddressEnabled(event.target.checked);
 
-    
+    const [popupVisible, setPopupVisible] = useState(false); // Manage popup visibility
+    const [spaceLink, setSpaceLink] = useState("");
 
     const addSpaceToUser = async (newSpace) => {
         try {
@@ -70,14 +72,26 @@ const Page = () => {
           ownerId: user.uid,
           
         };
+
+
       
-        
-        const userId = user.uid; 
+
+        try{
+            const docRef = await addDoc(collection(db, 'spaces'), newSpace);
+            const generatedSpaceId = docRef.id;
+            const link = `https://testimonialhub.vercel.app/${generatedSpaceId}/fillDetails`;
+            setSpaceLink(link);
+            setPopupVisible(true);
+        } catch(err) {
+            console.log("error adding space", err);
+        }
       
-        await addSpaceToUser(newSpace); 
-        
-        router.push("/Home");
       };
+
+      const handleClosePopUp = () => {
+        setPopupVisible(false);
+        router.push("/Home");
+      }
 
       const addQuestion = () => {
         const newQuestion = { id: questions.length + 1, question: '' };
@@ -98,6 +112,12 @@ const Page = () => {
         const updatedQuestions = questions.filter((question) => question.id !== id);
         setQuestions(updatedQuestions);
     };
+
+    const copylink = (e) => {
+        navigator.clipboard.writeText(spaceLink)
+        router.push('/Home')
+    }
+
 
     return (
         
@@ -196,10 +216,30 @@ const Page = () => {
                         label="Address"
                         />
                     </FormGroup>
+                    
                     <button type="button" className='text-center w-[70vw] h-[40px] bg-[blue] text-[white] m-2 lg:w-[30vw] ' onClick={handleCreateSpace}>Create new Space</button>
                 </form>
             </div>
         </div>
+
+        {popupVisible && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded shadow-lg text-center gap-3 display flex flex-col justify-center items-center">
+            <h1 className='text-2xl text-gray-800 font-semibold'>Space Created Successfully!</h1>
+            <Image src={successMeme} alt="Success Meme" width={300} height={300} />
+            {/* <p>
+              <button href={spaceLink} target="_blank" rel="noopener noreferrer" className='text-center w-[70vw] h-[40px] bg-gray-800 text-[white] lg:w-[30vw]'>
+                Go to Testimonial Form
+              </button>
+            </p> */}
+            <div onClick={copylink} className="shareicon" >
+                <button className='text-center w-[70vw] h-[40px] bg-[blue] text-[white] m-2 lg:w-[30vw]'> Copy to Clipboard </button>
+            </div>
+            
+            {/* <button className='text-center w-[70vw] h-[40px] bg-[blue] text-[white] m-2 lg:w-[30vw]' onClick={handleClosePopUp}>Close</button> */}
+          </div>
+        </div>
+      )}
 
         </div>
     

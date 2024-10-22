@@ -40,7 +40,6 @@ const Home = () => {
 
   const fetchSpaces = async (userId) => {
     try {
-        console.log("inside fetchSpaces"); 
         const spacesRef = collection(db, "spaces"); 
         const q = query(spacesRef, where("ownerId", "==", userId));
         const querySnapshot = await getDocs(q);
@@ -173,10 +172,10 @@ const NoSpaces = ({ router }) => (
 
 const SpacesList = ({ spaces, router }) => (
   <div className="flex flex-col items-center">
-    <div className="cards flex flex-col lg:flex-row lg:flex-wrap items-center gap-10">
+    <div className="cards flex flex-col lg:flex-row lg:flex-wrap lg:justify-around items-center gap-10">
       {spaces.map((space, index) => (
         <div
-          key={space.id}
+          key={space.id}  
           className="bg-white min-w-80 min-h-40 shadow-md rounded-lg flex flex-col justify-between gap-6 p-10 md:p-12 cursor-pointer"
           onClick={() => router.push(`/Home/${space.id}`)}
         >
