@@ -14,6 +14,7 @@ const FillDetails = ({params}) => {
   const spaceId = params.spaceid; 
 
   const fetchSpaceDetails = async (spaceId) => {
+    setLoading(true);
     console.log("Fetching space:", spaceId);
     try {
       const spaceRef = doc(db, "spaces", spaceId); 
@@ -49,7 +50,7 @@ const FillDetails = ({params}) => {
     );
   }
 
-  if (!space) return <p>Space not found!</p>; 
+  
 
   return (
     <div className="p-10 flex flex-col justify-center items-center">
