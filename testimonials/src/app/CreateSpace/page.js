@@ -79,7 +79,7 @@ const Page = () => {
         try{
             const docRef = await addDoc(collection(db, 'spaces'), newSpace);
             const generatedSpaceId = docRef.id;
-            const link = `https://testimonialhub.vercel.app/${generatedSpaceId}/fillDetails`;
+            const link = `https://testimonialhub.vercel.app/${generatedSpaceId}/FillDetails`;
             setSpaceLink(link);
             setPopupVisible(true);
         } catch(err) {

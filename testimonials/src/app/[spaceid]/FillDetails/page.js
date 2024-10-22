@@ -14,7 +14,7 @@ const FillDetails = ({params}) => {
   const spaceId = params.spaceid; 
 
   const fetchSpaceDetails = async (spaceId) => {
-    setLoading(true);
+    // setLoading(true);
     console.log("Fetching space:", spaceId);
     try {
       const spaceRef = doc(db, "spaces", spaceId); 
@@ -43,21 +43,24 @@ const FillDetails = ({params}) => {
   console.log(space);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-gray-900"></div>
-      </div>
-    );
+    
   }
 
+  if(!space) return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-gray-900"></div>
+    </div>
+  );
   
 
-  return (
+  else return (
     <div className="p-10 flex flex-col justify-center items-center">
       <TestimonialForm space={space} key={spaceId} spaceid={spaceId}/>
       
     </div>
   );
 };
+
+  
 
 export default FillDetails;
