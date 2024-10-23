@@ -8,6 +8,9 @@ import { auth } from "../../../lib/firebase";
 import TestimonialCard from "@/app/components/TestimonialCard/TestimonialCard";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import Sample from "@/app/components/Sample/Sample";
 
 
 const SpaceDetails = ({ params }) => {
@@ -18,12 +21,14 @@ const SpaceDetails = ({ params }) => {
   const [space, setSpace] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("All");
+  const [activeEmbedTab, setActiveEmbedTab] = useState('');
 
   const [testimonials, setTestimonials] = useState([]);
   const [videoTestimonials, setVideoTestimonials] = useState([]);
   const [textTestimonials, setTextTestimonials] = useState([]);
   const [likedTestimonials, setLikedTesimonials] = useState([]);
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
+  const [embedDropDown, setEmbedDropDown] = useState(false);
   
   const notify = () => toast("Link Copied to clipboard");
   const notifyLike = () => toast("Testimonial added to Gallery");
@@ -113,10 +118,11 @@ const SpaceDetails = ({ params }) => {
   const handleFetchUpdatedTestimonial = async(updatedTestimonial) => {
     if(updatedTestimonial.isLiked){
       notifyLike();
-      alert("added to gallery")
+      alert("Testimonial added to Gallery")
     }
     else{
       notifyDislike();
+      alert("Testimonial removed from Gallery")
     }
     setLoading(true);
     await fetchSpaceTestimonials();
@@ -129,6 +135,11 @@ const SpaceDetails = ({ params }) => {
   }
 
   const tabs = ["All", "Video", "Text", "Liked"];
+  const embedTabs = ["Gallery", "Single Testimonial", "Collecting Widget"];
+
+  const handleEmbedTabChange = (tab) => {
+    setActiveEmbedTab(tab);
+  }
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -144,6 +155,7 @@ const SpaceDetails = ({ params }) => {
     else if(tab=="Liked") {
       setFilteredTestimonials(likedTestimonials);
     }
+    
   }
 
   const copylink = (e) => {
@@ -164,7 +176,7 @@ const SpaceDetails = ({ params }) => {
 
   return (
     <div className="">
-      <nav className="bg-gray-900 p-4">
+      <nav className="bg-gray-900 p-4 fixed w-[100vw] z-10">
         <div>
           <h1 className="text-left font-bold text-white text-2xl">{space.name}</h1>
           <h3 className="font-semibold text-[#b4b4b4] text-sm">Space Url: 
@@ -186,37 +198,83 @@ const SpaceDetails = ({ params }) => {
           theme="light"
           
           />
-      <div className="hidden md:flex">
+      <div className="hidden md:flex mt-[85px]">
         
-        <div className=" md:flex flex-col w-1/6 bg-gray-900 h-screen py-4 px-1 space-y-4">
+        <div className=" md:flex flex-col w-1/6 bg-gray-900 py-4 px-1 space-y-4 fixed h-[100vh]">
           {tabs.map((tab) => (
             <button
               key={tab}
               className={`py-2 px-4 rounded text-left  ${
-                activeTab === tab ? "bg-gray-200 font-bold text-gray-800" : "text-white"
+                activeTab === tab ? "bg-gray-200 font-bold text-gray-800" : "text-white hover:bg-gray-700"
               }`}
               onClick={() => handleTabChange(tab)}
             >
               {tab}
             </button>
           ))}
+
+          <button className="py-2 px-4 rounded text-left text-gray-100 font-bold mt-24 flex flex-row justify-between" onClick={() => setEmbedDropDown((prev)=>!prev)}>
+              <h3 className="">
+              Embed Testimonials 
+              </h3>
+              <>
+              {embedDropDown ? <MdKeyboardArrowDown className="text-xl"/> : <MdOutlineKeyboardArrowRight className="text-xl"/>}
+              </>
+          </button> 
+
+          {embedDropDown && (
+              <div className="flex flex-col ml-3 gap-4">
+                {/* Gallery Button */}
+                <button
+                  className={`py-2 px-4 rounded text-left hover:bg-gray-700 ${
+                    activeEmbedTab === "Gallery" ? "text-white" : "text-white"
+                  }`}
+                  onClick={() => handleEmbedTabChange("Gallery")}
+                >
+                  Gallery
+                </button>
+
+                {/* Single Testimonial Button */}
+                <button
+                  className={`py-2 px-4 rounded text-left hover:bg-gray-700 ${
+                    activeEmbedTab === "SingleTestimonial" ? "" : "text-white"
+                  }`}
+                  onClick={() => handleEmbedTabChange("SingleTestimonial")}
+                >
+                  Single Testimonial
+                </button>
+
+                {/* Collecting Widget Button */}
+                <button
+                  className={`py-2 px-4 rounded text-left hover:bg-gray-700 ${
+                    activeEmbedTab === "CollectingWidget" ? "" : "text-white"
+                  }`}
+                  onClick={() => handleEmbedTabChange("CollectingWidget")}
+                >
+                  Collecting Widget
+                </button>
+              </div>
+            )}
         </div>
         
-        <div className="flex-1 ">
+        <div className="flex-1 ml-[16.666667%]">
             <div className="flex justify-end">
             <button className="text-center  h-[40px] bg-gray-900 rounded-lg text-[white] m-4 p-2 hover:scale-105" onClick={copylink}>Copy Testimonial Form Link to Clipboard</button>
             </div>
-        <div className="p-4 flex flex-1 flex-row">
+        <div className="p-4 flex-1">
 
         {filteredTestimonials.map((testimonial) => (
               <TestimonialCard testimonial={testimonial} key={testimonial.id} fetchUpdatedTestimonial={handleFetchUpdatedTestimonial} />
             ))
           }
         </div>
+        {/* <div className="flex flex-row justify-center">
+        <Sample testimonials={likedTestimonials} />
+        </div> */}
       </div>
       </div>
 
-      <div className="md:hidden">
+      <div className="md:hidden mt-[85px]">
         <div className="flex flex-col md:hidden">
           <div className="flex flex-wrap justify-around p-4 space-x-2">
             {tabs.map((tab) => (
@@ -232,6 +290,22 @@ const SpaceDetails = ({ params }) => {
                 {tab}
               </button>
             ))}
+
+
+          </div>
+          <div className="relative w-full px-4 my-2">
+            <select
+              className="w-full p-2 border rounded-lg text-gray-800 bg-white shadow-sm"
+              value={activeEmbedTab}
+              onChange={(e) => handleEmbedTabChange(e.target.value)}
+            >
+              <option value="" disabled>
+                Select embed Widget
+              </option>
+              <option value="Gallery" className="hover:bg-gray-800 hover:text-white">Gallery</option>
+              <option value="SingleTestimonial" className="hover:bg-gray-800 hover:text-white">Single Testimonial</option>
+              <option value="CollectingWidget" className="hover:bg-gray-800 hover:text-white">Collecting Widget</option>
+            </select>
           </div>
           
           <button className="text-center  h-[40px] bg-gray-900 rounded-lg self-center text-[white] m-2 p-2 hover:scale-105" onClick={copylink}>Copy Testimonial Form Link to Clipboard</button>
@@ -243,6 +317,7 @@ const SpaceDetails = ({ params }) => {
           </div>
         </div>
       </div>
+          
     </div>
   );
 };
