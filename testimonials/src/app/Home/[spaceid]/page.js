@@ -22,9 +22,12 @@ const SpaceDetails = ({ params }) => {
   const [testimonials, setTestimonials] = useState([]);
   const [videoTestimonials, setVideoTestimonials] = useState([]);
   const [textTestimonials, setTextTestimonials] = useState([]);
+  const [likedTestimonials, setLikedTesimonials] = useState([]);
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
   
   const notify = () => toast("Link Copied to clipboard");
+  const notifyLike = () => toast("Testimonial added to Gallery");
+  const notifyDislike = () => toast("Testimonial Removed to Gallery");
 
   const fetchSpaceTestimonials = async() => {
     
@@ -40,6 +43,7 @@ const SpaceDetails = ({ params }) => {
 
         const video = fetchedTestimonials.filter((t) => t.video!=="" && t.text==="");
         const text = fetchedTestimonials.filter((t) => t.video==="" && t.text!=="");
+        const liked = fetchedTestimonials.filter((t) => t.isLiked===true);
 
         console.log(video, "vi");
         console.log(text, "tx");
@@ -47,6 +51,7 @@ const SpaceDetails = ({ params }) => {
         setVideoTestimonials(video);
         setTextTestimonials(text);
         setTestimonials(fetchedTestimonials);
+        setLikedTesimonials(liked);
         setFilteredTestimonials(fetchedTestimonials);
         
         setLoading(false);
@@ -94,13 +99,34 @@ const SpaceDetails = ({ params }) => {
 
   if (loading) {
     return (
+      <>
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-gray-900"></div>
       </div>
+      </>
     );
   }
 
   if (!space) return <p>Space not found!</p>;
+
+
+  const handleFetchUpdatedTestimonial = async(updatedTestimonial) => {
+    if(updatedTestimonial.isLiked){
+      notifyLike();
+      alert("added to gallery")
+    }
+    else{
+      notifyDislike();
+    }
+    setLoading(true);
+    await fetchSpaceTestimonials();
+    
+    setActiveTab("All");
+    setLoading(false);
+    
+    
+    
+  }
 
   const tabs = ["All", "Video", "Text", "Liked"];
 
@@ -114,6 +140,9 @@ const SpaceDetails = ({ params }) => {
     }
     else if(tab==="Text") {
       setFilteredTestimonials(textTestimonials);
+    }
+    else if(tab=="Liked") {
+      setFilteredTestimonials(likedTestimonials);
     }
   }
 
@@ -180,7 +209,7 @@ const SpaceDetails = ({ params }) => {
         <div className="p-4 flex flex-1 flex-row">
 
         {filteredTestimonials.map((testimonial) => (
-              <TestimonialCard testimonial={testimonial} key={testimonial.id} />
+              <TestimonialCard testimonial={testimonial} key={testimonial.id} fetchUpdatedTestimonial={handleFetchUpdatedTestimonial} />
             ))
           }
         </div>
