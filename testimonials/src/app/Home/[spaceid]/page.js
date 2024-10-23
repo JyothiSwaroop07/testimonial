@@ -6,9 +6,12 @@ import { db } from "../../../lib/firebase";
 import { useAuth } from "@/lib/useAuth";
 import { auth } from "../../../lib/firebase";
 import TestimonialCard from "@/app/components/TestimonialCard/TestimonialCard";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const SpaceDetails = ({ params }) => {
   const { spaceid } = params; 
+  const spaceLink = `https://testimonialhub.vercel.app/${spaceid}/FillDetails`
   
   const router = useRouter();
   const [space, setSpace] = useState(null);
@@ -19,6 +22,8 @@ const SpaceDetails = ({ params }) => {
   const [videoTestimonials, setVideoTestimonials] = useState([]);
   const [textTestimonials, setTextTestimonials] = useState([]);
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
+  
+  const notify = () => toast("Link Copied to clipboard");
 
   const fetchSpaceTestimonials = async() => {
     
@@ -111,7 +116,21 @@ const SpaceDetails = ({ params }) => {
     }
   }
 
-  
+  const copylink = (e) => {
+    navigator.clipboard.writeText(spaceLink)
+    console.log("copied");
+    // toast.success('Link copied to clipboard!', {
+    //   position: "top-right",
+    //   autoClose: 3000,
+    //   hideProgressBar: false,
+    //   closeOnClick: true,
+    //   pauseOnHover: true,
+    //   draggable: true,
+    //   progress: undefined,
+    //   theme: "colored",
+    // });
+    notify();
+}
 
   return (
     <div className="">
@@ -124,7 +143,21 @@ const SpaceDetails = ({ params }) => {
         </div>
       </nav>
       <hr className="text-white"></hr>
+      <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          
+          draggable
+          pauseOnHover
+          theme="light"
+          
+          />
       <div className="hidden md:flex">
+        
         <div className=" md:flex flex-col w-1/6 bg-gray-900 h-screen py-4 px-1 space-y-4">
           {tabs.map((tab) => (
             <button
@@ -138,13 +171,19 @@ const SpaceDetails = ({ params }) => {
             </button>
           ))}
         </div>
-
+        
+        <div className="flex-1 ">
+            <div className="flex justify-end">
+            <button className="text-center  h-[40px] bg-gray-900 rounded-lg text-[white] m-4 p-2 hover:scale-105" onClick={copylink}>Copy Testimonial Form Link to Clipboard</button>
+            </div>
         <div className="p-4 flex flex-1 flex-row">
+
         {filteredTestimonials.map((testimonial) => (
               <TestimonialCard testimonial={testimonial} key={testimonial.id} />
             ))
           }
         </div>
+      </div>
       </div>
 
       <div className="md:hidden">
@@ -165,6 +204,7 @@ const SpaceDetails = ({ params }) => {
             ))}
           </div>
           
+          <button className="text-center  h-[40px] bg-gray-900 rounded-lg self-center text-[white] m-2 p-2 hover:scale-105" onClick={copylink}>Copy Testimonial Form Link to Clipboard</button>
           <div className="p-4">
             {filteredTestimonials.map((testimonial) => (
               <TestimonialCard testimonial={testimonial} key={testimonial.id} />
