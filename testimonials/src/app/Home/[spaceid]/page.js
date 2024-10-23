@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/useAuth";
 import { auth } from "../../../lib/firebase";
 import TestimonialCard from "@/app/components/TestimonialCard/TestimonialCard";
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const SpaceDetails = ({ params }) => {
