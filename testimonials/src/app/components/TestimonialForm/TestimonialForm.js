@@ -9,6 +9,7 @@ const TestimonialForm = ({ space, spaceid }) => {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [text, setText] = useState('');
+  const [video, setVideo] = useState('');
   const [rating, setRating] = useState(0);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // Popup visibility state
   console.log(space);
@@ -23,6 +24,7 @@ const TestimonialForm = ({ space, spaceid }) => {
         email,
         address,
         text,
+        video,
         rating,
         createdAt: new Date().toISOString(),
       });
