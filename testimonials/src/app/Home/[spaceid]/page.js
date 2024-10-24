@@ -12,6 +12,11 @@ import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import Sample from "@/app/components/Sample/Sample";
 
+import mansoryfixed from './mansoryfixed.png';
+import carousels from './carousels.png';
+
+import Image from "next/image";
+
 
 const SpaceDetails = ({ params }) => {
   const { spaceid } = params; 
@@ -29,6 +34,11 @@ const SpaceDetails = ({ params }) => {
   const [likedTestimonials, setLikedTesimonials] = useState([]);
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
   const [embedDropDown, setEmbedDropDown] = useState(false);
+
+  const [galleryPopupVisible, setGalleryPopupVisible] = useState(false);
+  const [embedPopupVisible, setEmbedPopupVisible] = useState(false);
+
+  const [layoutType, setLayoutType] = useState('');
   
   const notify = () => toast("Link Copied to clipboard");
   const notifyLike = () => toast("Testimonial added to Gallery");
@@ -135,10 +145,12 @@ const SpaceDetails = ({ params }) => {
   }
 
   const tabs = ["All", "Video", "Text", "Liked"];
-  const embedTabs = ["Gallery", "Single Testimonial", "Collecting Widget"];
-
+  
   const handleEmbedTabChange = (tab) => {
-    setActiveEmbedTab(tab);
+    if(tab=="Gallery"){
+      setGalleryPopupVisible(!galleryPopupVisible);
+      console.log("gallery clicked")
+    }
   }
 
   const handleTabChange = (tab) => {
@@ -174,6 +186,69 @@ const SpaceDetails = ({ params }) => {
     notify();
 }
 
+  const handleLayoutSelect = (type) => {
+    setGalleryPopupVisible(false);
+    if(type==1){
+      setLayoutType('mansoryfixed');
+    }
+    else if(type==2){
+      setLayoutType('carousels');
+    }
+    setEmbedPopupVisible(true);
+
+  }
+
+  const GalleryPopup = () => {
+    return (
+    <div className="fixed top-0 right-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-30">
+      
+      <div className="bg-white rounded-lg p-12 flex flex-col justify-center items-center">
+          
+
+        <h1 className="text-gray-800 text-2xl font-sembold mb-5">Embed your Wall of Love</h1>
+        <h3 className="text-gray-700 text-xl font-sembold mb-3">Choose a Layout</h3>
+
+        <div className="layouts flex flex-row gap-3">
+
+          <div className="border-2 border-gray-700 flex flex-col p-2 justify-between items-center rounded-lg cursor-pointer hover:scale-105" onClick={()=>handleLayoutSelect(1)}>
+            <Image src={mansoryfixed} width={200} height={200} alt="layout1"/>
+            <h3 className="text-gray-700 text-lg font-sembold mb-3 justify-self-end">Mansory - Fixed</h3>
+          </div>
+
+          <div className="border-2 border-gray-700 flex flex-col p-2 justify-between items-center rounded-lg cursor-pointer hover:scale-105" onClick={()=>handleLayoutSelect(2)}>
+            <Image src={carousels} width={200} height={200} alt="layout2"/>
+            <h3 className="text-gray-700 text-lg font-sembold mb-3 justify-self-end">Carousels</h3>
+          </div>
+
+        </div>
+
+        <button className="bg-gray-900 p-2 rounded-lg text-white w-[120px] h-[40px] mt-6 " onClick={()=>setGalleryPopupVisible(false)}>
+          Close
+        </button>
+      </div>
+    </div>
+    )
+  }
+
+  const EmbedPopup = () => {
+    return(
+      <div className="fixed top-0 right-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-30">
+      
+      <div className="bg-white rounded-lg p-12 flex flex-col justify-center items-center">
+          
+
+        <h1 className="text-gray-800 text-2xl font-sembold mb-5">Code to embed</h1>
+        <h3 className="text-gray-700 text-xl font-sembold mb-3">{layoutType}</h3>
+
+      
+        <button className="bg-gray-900 p-2 rounded-lg text-white w-[120px] h-[40px] mt-6 " onClick={()=>setEmbedPopupVisible(false)}>
+          Close
+        </button>
+      </div>
+    </div>
+    )
+  }
+
   return (
     <div className="">
       <nav className="bg-gray-900 p-4 fixed w-[100vw] z-10">
@@ -198,6 +273,8 @@ const SpaceDetails = ({ params }) => {
           theme="light"
           
           />
+
+            {embedPopupVisible==true ? (<EmbedPopup/>) : galleryPopupVisible==true ? (<GalleryPopup/>) : null} 
       <div className="hidden md:flex mt-[85px]">
         
         <div className=" md:flex flex-col w-1/6 bg-gray-900 py-4 px-1 space-y-4 fixed h-[100vh]">
@@ -229,7 +306,7 @@ const SpaceDetails = ({ params }) => {
                   className={`py-2 px-4 rounded text-left hover:bg-gray-700 ${
                     activeEmbedTab === "Gallery" ? "text-white" : "text-white"
                   }`}
-                  onClick={() => handleEmbedTabChange("Gallery")}
+                  onClick={() => setGalleryPopupVisible(true)}
                 >
                   Gallery
                 </button>
@@ -302,7 +379,7 @@ const SpaceDetails = ({ params }) => {
               <option value="" disabled>
                 Select embed Widget
               </option>
-              <option value="Gallery" className="hover:bg-gray-800 hover:text-white">Gallery</option>
+              <option value="Gallery" className="hover:bg-gray-800 hover:text-white" onClick={()=>setGalleryPopupVisible(true)}>Gallery</option>
               <option value="SingleTestimonial" className="hover:bg-gray-800 hover:text-white">Single Testimonial</option>
               <option value="CollectingWidget" className="hover:bg-gray-800 hover:text-white">Collecting Widget</option>
             </select>
@@ -317,7 +394,7 @@ const SpaceDetails = ({ params }) => {
           </div>
         </div>
       </div>
-          
+      
     </div>
   );
 };
