@@ -125,24 +125,17 @@ const SpaceDetails = ({ params }) => {
   if (!space) return <p>Space not found!</p>;
 
 
-  const handleFetchUpdatedTestimonial = async(updatedTestimonial) => {
-    if(updatedTestimonial.isLiked){
-      notifyLike();
-      alert("Testimonial added to Gallery")
+  const handleFetchUpdatedTestimonial = async (updatedTestimonial) => {
+    updatedTestimonial.isLiked ? notifyLike() : notifyDislike();
+  
+    try {
+      setLoading(true);
+      await fetchSpaceTestimonials();
+      setActiveTab("All");
+    } finally {
+      setLoading(false);
     }
-    else{
-      notifyDislike();
-      alert("Testimonial removed from Gallery")
-    }
-    setLoading(true);
-    await fetchSpaceTestimonials();
-    
-    setActiveTab("All");
-    setLoading(false);
-    
-    
-    
-  }
+  };
 
   const tabs = ["All", "Video", "Text", "Liked"];
   
