@@ -231,7 +231,7 @@ const SpaceDetails = ({ params }) => {
           
 
         <h1 className="text-gray-800 text-2xl font-sembold mb-5">Code to embed</h1>
-        <h3 className="text-gray-700 text-xl font-sembold mb-3">{layoutType}</h3>
+        <h3 className="text-gray-700 text-xl font-sembold mb-3">{`https://testimonialhub.vercel.app/embed-testimonials/${layoutType}/${spaceid}`}</h3>
 
       
         <button className="bg-gray-900 p-2 rounded-lg text-white w-[120px] h-[40px] mt-6 " onClick={()=>setEmbedPopupVisible(false)}>
