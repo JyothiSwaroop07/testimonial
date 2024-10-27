@@ -1,5 +1,3 @@
-// src/app/page.js
-
 "use client";
 
 import Navbar from "./components/Navbar/Navbar";

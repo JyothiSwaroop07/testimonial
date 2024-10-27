@@ -38,6 +38,8 @@ const SpaceDetails = ({ params }) => {
   const [galleryPopupVisible, setGalleryPopupVisible] = useState(false);
   const [embedPopupVisible, setEmbedPopupVisible] = useState(false);
 
+  const [copied, setCopied] = useState(false);
+
   const [layoutType, setLayoutType] = useState('');
   
   const notify = () => toast("Link Copied to clipboard");
@@ -224,16 +226,44 @@ const SpaceDetails = ({ params }) => {
   }
 
   const EmbedPopup = () => {
+
+    const embedCode = `
+        <div style="position: relative; width: 100%; height: 550px; padding-bottom: 56.25%; overflow: hidden; margin-top:64px; margin-bottom: 64px;">
+          <iframe src="https://embed-testimonials.vercel.app/${layoutType}/${spaceid}" 
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
+                  title="Testimonials"
+                  loading="lazy"
+                  allowfullscreen>
+          </iframe>
+        </div>`;
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(embedCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+  };
+
     return(
       <div className="fixed top-0 right-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-30">
       
-      <div className="bg-white rounded-lg p-12 flex flex-col justify-center items-center">
+      <div className="bg-white rounded-lg w-[70%] p-12 flex flex-col justify-center items-center">
           
 
-        <h1 className="text-gray-800 text-2xl font-sembold mb-5">Code to embed</h1>
-        <h3 className="text-gray-700 text-xl font-sembold mb-3">{`https://testimonialhub.vercel.app/embed-testimonials/${layoutType}/${spaceid}`}</h3>
+        <h1 className="text-gray-800 text-2xl font-bold mb-5">Code to embed</h1>
+        <h2 className="text-gray-800 text-2xl font-normal mb-5">Embed this code to dunamically update your testimonials in your site by selecting and unselecting the testimonials here</h2>
+        <div className="relative bg-black text-white w-full py-4 px-2 rounded-md overflow-x-auto">
+          <pre className="whitespace-pre overflow-x-scroll">{embedCode}</pre>
 
-      
+          {/* Copy Button */}
+          <button 
+            onClick={copyToClipboard}
+            className="absolute top-3 right-3 bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded"
+          >
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+        </div>
+
+      ``
         <button className="bg-gray-900 p-2 rounded-lg text-white w-[120px] h-[40px] mt-6 " onClick={()=>setEmbedPopupVisible(false)}>
           Close
         </button>
