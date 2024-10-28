@@ -3,15 +3,18 @@ import { CiVideoOn } from "react-icons/ci";
 import { FaPen, FaStar } from "react-icons/fa";
 import { doc, collection, setDoc } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
+import axios from 'axios';
 
 const TestimonialForm = ({ space, spaceid }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [text, setText] = useState('');
-  const [video, setVideo] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
   const [rating, setRating] = useState(0);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // Popup visibility state
+  const [isVideoPopupOpen, setIsVideoPopupOpen] = useState(false); // Video popup state
+
   console.log(space);
   const handleSubmit = async () => {
     const testimonialId = crypto.randomUUID();
@@ -24,7 +27,7 @@ const TestimonialForm = ({ space, spaceid }) => {
         email,
         address,
         text,
-        video,
+        video: videoUrl,
         rating,
         createdAt: new Date().toISOString(),
       });
@@ -34,8 +37,27 @@ const TestimonialForm = ({ space, spaceid }) => {
     }
   };
 
-  const togglePopup = () => setIsPopupOpen(!isPopupOpen); // Toggle popup
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "ml_default"); // Replace with your Cloudinary upload preset
 
+    try {
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/dchbfnlct/video/upload`,
+        formData
+      );
+      const url = response.data.secure_url;
+      setVideoUrl(url);
+      console.log("Video uploaded successfully:", url);
+    } catch (error) {
+      console.error("Video upload failed:", error);
+    }
+  };
+
+  const togglePopup = () => setIsPopupOpen(!isPopupOpen); // Toggle popup
+  const toggleVideoPopup = () => setIsVideoPopupOpen(!isVideoPopupOpen);
   const handleRating = (index) => setRating(index + 1); // Set rating based on star clicked
 
   return (
@@ -56,6 +78,7 @@ const TestimonialForm = ({ space, spaceid }) => {
         <button
           type="button"
           className="flex flex-row justify-center w-[70vw] h-[40px] bg-blue-600 text-white m-2 lg:w-[30vw]"
+          onClick={toggleVideoPopup}
         >
           <h1 className="text-center m-auto flex flex-row">
             <CiVideoOn size={20} style={{ margin: '2px' }} /> Record a Video
@@ -72,6 +95,28 @@ const TestimonialForm = ({ space, spaceid }) => {
           </h1>
         </button>
       </div>
+
+      {isVideoPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[80vw] lg:w-[40vw]">
+            <h2 className="text-xl font-bold mb-4">Upload Your Video</h2>
+            <input
+              type="file"
+              accept="video/*"
+              className="mb-4"
+              onChange={handleVideoUpload}
+            />
+            <div className="flex justify-end">
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded mr-2"
+                onClick={toggleVideoPopup}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isPopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
