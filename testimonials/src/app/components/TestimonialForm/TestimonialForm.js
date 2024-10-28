@@ -26,6 +26,7 @@ const TestimonialForm = ({ space, spaceid }) => {
         name,
         email,
         address,
+        isLiked: false,
         text,
         video: videoUrl,
         rating,
