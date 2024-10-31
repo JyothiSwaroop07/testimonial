@@ -4,6 +4,10 @@ import { FaPen, FaStar } from "react-icons/fa";
 import { doc, collection, setDoc } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import axios from 'axios';
+import { useEffect } from "react";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TestimonialForm = ({ space, spaceid }) => {
   const [name, setName] = useState('');
@@ -14,6 +18,8 @@ const TestimonialForm = ({ space, spaceid }) => {
   const [rating, setRating] = useState(0);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // Popup visibility state
   const [isVideoPopupOpen, setIsVideoPopupOpen] = useState(false); // Video popup state
+
+  const notify = () => toast("Testimonial Sent... You can close this window...");
 
   console.log(space);
   const handleSubmit = async () => {
@@ -33,10 +39,22 @@ const TestimonialForm = ({ space, spaceid }) => {
         createdAt: new Date().toISOString(),
       });
       console.log("Testimonial added");
+      setName('');
+      setEmail('');
+      setAddress('');
+      setText('');
+      
+      notify();
     } catch (error) {
       console.log("Error submitting testimonial", error);
     }
   };
+
+  useEffect(() => {
+  if (videoUrl) {
+    console.log("Updated Video URL:", videoUrl);
+  }
+}, [videoUrl]);
 
   const handleVideoUpload = async (e) => {
     const file = e.target.files[0];
@@ -63,6 +81,19 @@ const TestimonialForm = ({ space, spaceid }) => {
 
   return (
     <div className="p-10 flex flex-col justify-center items-center">
+      <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          
+          draggable
+          pauseOnHover
+          theme="light"
+          
+          />
       <h1 className="text-2xl font-bold mb-4">{space.header}</h1>
       <p className="text-gray-600 mb-8 text-m">{space.message}</p>
 
