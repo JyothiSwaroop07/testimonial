@@ -199,6 +199,7 @@ const SpaceDetails = ({ params }) => {
   }
 
   const handletestimonialSelect = (testimonial) => {
+    console.log(testimonial.id)
     setSelectedTestimonialId(testimonial.id);
     setSingleTestimonialPopup(false);
     setSingleTestimonialEmbedPopup(true);
@@ -322,7 +323,7 @@ const SpaceDetails = ({ params }) => {
   const SingleTestimonialEmbedPopup = () => {
 
       const embedCode = `<div style="position: relative; width: 100%; height: 550px; padding-bottom: 56.25%; overflow: hidden; margin-top:64px; margin-bottom: 64px;">
-          <iframe src="https://embed-testimonials.vercel.app/${selectedTestimonialId}" 
+          <iframe src="https://embed-testimonials.vercel.app/SingleTestimonial/${selectedTestimonialId}" 
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
                   title="Testimonials"
                   loading="lazy"
