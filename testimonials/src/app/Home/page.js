@@ -142,12 +142,12 @@ useEffect(() => {
 };
 
 const Card = ({ title, icon, count }) => (
-  <div className="bg-white shadow-md rounded-lg flex flex-col justify-between gap-6 p-10 md:p-12">
+  <div className="bg-white shadow-md rounded-lg flex flex-col justify-between gap-6 p-8 md:p-9">
     <div className="flex justify-between items-center gap-12">
-      <h3 className="text-xl font-semibold text-gray-700">{title}</h3>
+      <h3 className="text-md font-semibold text-gray-700">{title}</h3>
       {icon}
     </div>
-    <div className="text-4xl font-bold text-gray-800">{count}</div>
+    <div className="text-sm font-normal text-gray-800">{count}</div>
   </div>
 );
 
@@ -172,15 +172,15 @@ const NoSpaces = ({ router }) => (
 
 const SpacesList = ({ spaces, router }) => (
   <div className="flex flex-col items-center">
-    <div className="cards flex flex-col lg:flex-row lg:flex-wrap lg:justify-around items-center gap-10">
+    <div className="cards flex flex-col lg:flex-row lg:flex-wrap lg:justify-center mx-auto gap-10">
       {spaces.map((space, index) => (
         <div
           key={space.id}  
-          className="bg-white min-w-80 min-h-40 shadow-md rounded-lg flex flex-col justify-between gap-6 p-10 md:p-12 cursor-pointer"
+          className="bg-white w-80 h-30 shadow-md rounded-lg flex flex-col justify-between gap-6 p-10 md:p-12 cursor-pointer"
           onClick={() => router.push(`/Home/${space.id}`)}
         >
-          <div className="flex justify-between items-center gap-12">
-            <h3 className="text-xl font-semibold text-gray-700">
+          <div className="flex justify-between items-center gap-8">
+            <h3 className="text-lg font-semibold text-gray-700">
               {space.name}
             </h3>
             <BsThreeDots className="text-3xl text-[#091057]" />

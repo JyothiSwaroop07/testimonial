@@ -37,6 +37,10 @@ const SpaceDetails = ({ params }) => {
 
   const [galleryPopupVisible, setGalleryPopupVisible] = useState(false);
   const [embedPopupVisible, setEmbedPopupVisible] = useState(false);
+  const [singleTestimonialPopup, setSingleTestimonialPopup] = useState(false);
+  const [singleTestimonialEmbedPopup, setSingleTestimonialEmbedPopup] = useState(false)
+
+  const [selectedTestimonialId, setSelectedTestimonialId] = useState('');
 
   const [copied, setCopied] = useState(false);
 
@@ -70,7 +74,8 @@ const SpaceDetails = ({ params }) => {
         setTestimonials(fetchedTestimonials);
         setLikedTesimonials(liked);
         setFilteredTestimonials(fetchedTestimonials);
-        
+      
+
         setLoading(false);
       }
       catch(error) {
@@ -193,6 +198,12 @@ const SpaceDetails = ({ params }) => {
 
   }
 
+  const handletestimonialSelect = (testimonial) => {
+    setSelectedTestimonialId(testimonial.id);
+    setSingleTestimonialPopup(false);
+    setSingleTestimonialEmbedPopup(true);
+  }
+
   const GalleryPopup = () => {
     return (
     <div className="fixed top-0 right-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-30">
@@ -271,6 +282,88 @@ const SpaceDetails = ({ params }) => {
     </div>
     )
   }
+  
+  const SingleTestimonialPopup = () => {
+    return (
+    <div className="fixed top-0 right-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-30">
+      
+      <div className="bg-white rounded-lg p-4 flex flex-col justify-center items-center">
+          
+
+        <h1 className="text-gray-800 text-2xl font-sembold mb-5">Embed your Wall of Love</h1>
+        <h3 className="text-gray-700 text-xl font-sembold mb-3">Choose a testimonial</h3>
+
+        <div className=" mx-auto overflow-x-hidden overflow-y-auto">
+        {testimonials.map((testimonial, index) => (
+          <div className="card bg-gray-100 my-2 rounded-lg p-2 hover:scale-105 hover:rounded-lg cursor-pointer" onClick={()=>handletestimonialSelect(testimonial)}>
+            <h2 className="text-xs text-gray-800 mb-2">{testimonial.name}</h2>
+
+            <h3 className="text-xs text-gray-800 truncate italic font-semibold mb-2 mt-2">{testimonial.text.slice(0,45)}.....</h3>
+
+            <h2 className="text-xs text-gray-800 mb-1 mt-1">{testimonial.email}</h2>
+          </div>
+        ))}
+        </div>
+
+        <div className="layouts flex flex-row gap-3">
+
+          
+
+        </div>
+
+        <button className="bg-gray-900 p-2 rounded-lg text-white w-[120px] h-[40px] mt-6 " onClick={()=>setSingleTestimonialPopup(false)}>
+          Close
+        </button>
+      </div>
+    </div>
+    )
+  }
+
+  const SingleTestimonialEmbedPopup = () => {
+
+      const embedCode = `<div style="position: relative; width: 100%; height: 550px; padding-bottom: 56.25%; overflow: hidden; margin-top:64px; margin-bottom: 64px;">
+          <iframe src="https://embed-testimonials.vercel.app/${selectedTestimonialId}" 
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
+                  title="Testimonials"
+                  loading="lazy"
+                  allowfullscreen>
+          </iframe>
+        </div>`;
+
+      const copyToClipboard = () => {
+        navigator.clipboard.writeText(embedCode);
+        setCopied(true);
+        setTimeout(()=>setCopied(false), 2000);
+      };
+
+      return (
+        <div className="fixed top-0 right-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-30">
+      
+      <div className="bg-white rounded-lg w-[70%] p-12 flex flex-col justify-center items-center">
+          
+
+        <h1 className="text-gray-800 text-2xl font-bold mb-5">Code to embed</h1>
+        <h2 className="text-gray-800 text-2xl font-normal mb-5">Embed this code to dynamically update your testimonial in your site by selecting and unselecting the testimonials here</h2>
+        <div className="relative bg-black text-white w-full py-4 px-2 rounded-md overflow-x-auto">
+          <pre className="whitespace-pre overflow-x-scroll">{embedCode}</pre>
+
+          {/* Copy Button */}
+          <button 
+            onClick={copyToClipboard}
+            className="absolute top-3 right-3 bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded"
+          >
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+        </div>
+
+      ``
+        <button className="bg-gray-900 p-2 rounded-lg text-white w-[120px] h-[40px] mt-6 " onClick={()=>setSingleTestimonialEmbedPopup(false)}>
+          Close
+        </button>
+      </div>
+    </div>
+      )
+  }
 
   return (
     <div className="">
@@ -297,7 +390,11 @@ const SpaceDetails = ({ params }) => {
           
           />
 
-            {embedPopupVisible==true ? (<EmbedPopup/>) : galleryPopupVisible==true ? (<GalleryPopup/>) : null} 
+      {embedPopupVisible==true ? (<EmbedPopup/>) : galleryPopupVisible==true ? (<GalleryPopup/>) : null} 
+
+
+      {singleTestimonialEmbedPopup==true ? (<SingleTestimonialEmbedPopup/>) : singleTestimonialPopup==true ? (<SingleTestimonialPopup/>) : null}
+
       <div className="hidden md:flex mt-[85px]">
         
         <div className=" md:flex flex-col w-1/6 bg-gray-900 py-4 px-1 space-y-4 fixed h-[100vh]">
@@ -339,7 +436,7 @@ const SpaceDetails = ({ params }) => {
                   className={`py-2 px-4 rounded text-left hover:bg-gray-700 ${
                     activeEmbedTab === "SingleTestimonial" ? "" : "text-white"
                   }`}
-                  onClick={() => handleEmbedTabChange("SingleTestimonial")}
+                  onClick={() => setSingleTestimonialPopup(true)}
                 >
                   Single Testimonial
                 </button>
@@ -374,6 +471,8 @@ const SpaceDetails = ({ params }) => {
       </div>
       </div>
 
+
+
       <div className="md:hidden mt-[85px]">
         <div className="flex flex-col md:hidden">
           <div className="flex flex-wrap justify-around p-4 space-x-2">
@@ -403,7 +502,7 @@ const SpaceDetails = ({ params }) => {
                 Select embed Widget
               </option>
               <option value="Gallery" className="hover:bg-gray-800 hover:text-white" onClick={()=>setGalleryPopupVisible(true)}>Gallery</option>
-              <option value="SingleTestimonial" className="hover:bg-gray-800 hover:text-white">Single Testimonial</option>
+              <option value="SingleTestimonial" className="hover:bg-gray-800 hover:text-white" onClick={()=>setSingleTestimonialPopup(true)}>Single Testimonial</option>
               <option value="CollectingWidget" className="hover:bg-gray-800 hover:text-white">Collecting Widget</option>
             </select>
           </div>
