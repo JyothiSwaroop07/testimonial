@@ -117,7 +117,7 @@ const SpaceDetails = ({ params }) => {
       }
     };
     getUserIdAndFetchSpace();
-  });
+  }, [spaceid]);
 
   if (loading) {
     return (
