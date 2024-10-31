@@ -129,8 +129,8 @@ const TestimonialForm = ({ space, spaceid }) => {
       </div>
 
       {isVideoPopupOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[80vw] lg:w-[40vw]">
+        <div className="fixed overflow-y-auto inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[80vw] lg:w-[40vw] max-h-[80vh] overflow-y-auto">
             <VideoRecorder handleVideoUpload={handleVideoUpload} />
             <h2 className="text-sm font-normal text-gray-800 mb-1">You can also upload a recorded video here</h2>
             <input
