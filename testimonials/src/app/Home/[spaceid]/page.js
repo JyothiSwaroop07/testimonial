@@ -117,7 +117,7 @@ const SpaceDetails = ({ params }) => {
       }
     };
     getUserIdAndFetchSpace();
-  }, [spaceid, fetchSpaceTestimonials, router]);
+  });
 
   if (loading) {
     return (
@@ -296,7 +296,7 @@ const SpaceDetails = ({ params }) => {
 
         <div className=" mx-auto overflow-x-hidden overflow-y-auto">
         {testimonials.map((testimonial, index) => (
-          <div className="card bg-gray-100 my-2 rounded-lg p-2 hover:scale-105 hover:rounded-lg cursor-pointer" onClick={()=>handletestimonialSelect(testimonial)}>
+          <div className="card bg-gray-100 my-2 rounded-lg p-2 hover:scale-105 hover:rounded-lg cursor-pointer" onClick={()=>handletestimonialSelect(testimonial)} key={index}>
             <h2 className="text-xs text-gray-800 mb-2">{testimonial.name}</h2>
 
             <h3 className="text-xs text-gray-800 truncate italic font-semibold mb-2 mt-2">{testimonial.text.slice(0,45)}.....</h3>

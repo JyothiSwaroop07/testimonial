@@ -38,7 +38,7 @@ const FillDetails = ({params}) => {
     if (spaceId) {
       fetchSpaceDetails(spaceId); 
     }
-  }, [spaceId, fetchSpaceDetails]); 
+  }); 
 
   console.log(space);
 
