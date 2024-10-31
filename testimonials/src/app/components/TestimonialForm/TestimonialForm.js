@@ -5,7 +5,7 @@ import { doc, collection, setDoc } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import axios from 'axios';
 import { useEffect } from "react";
-
+import VideoRecorder from "../VideoRecorder/VideoRecorder";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -43,7 +43,7 @@ const TestimonialForm = ({ space, spaceid }) => {
       setEmail('');
       setAddress('');
       setText('');
-      
+
       notify();
     } catch (error) {
       console.log("Error submitting testimonial", error);
@@ -131,7 +131,8 @@ const TestimonialForm = ({ space, spaceid }) => {
       {isVideoPopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-[80vw] lg:w-[40vw]">
-            <h2 className="text-xl font-bold mb-4">Upload Your Video</h2>
+            <VideoRecorder handleVideoUpload={handleVideoUpload} />
+            <h2 className="text-sm font-normal text-gray-800 mb-1">You can also upload a recorded video here</h2>
             <input
               type="file"
               accept="video/*"
