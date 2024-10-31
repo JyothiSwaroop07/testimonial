@@ -117,7 +117,7 @@ const SpaceDetails = ({ params }) => {
       }
     };
     getUserIdAndFetchSpace();
-  }, [spaceid]);
+  }, [spaceid, fetchSpaceTestimonials, router]);
 
   if (loading) {
     return (
