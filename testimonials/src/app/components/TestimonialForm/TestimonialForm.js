@@ -8,6 +8,15 @@ import { useEffect } from "react";
 import VideoRecorder from "../VideoRecorder/VideoRecorder";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AWS from 'aws-sdk';
+
+AWS.config.update({
+  accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID, // Your access key
+  secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY, // Your secret key
+  region: process.env.NEXT_PUBLIC_AWS_REGION, // Your region
+});
+
+const s3 = new AWS.S3();
 
 const TestimonialForm = ({ space, spaceid }) => {
   const [name, setName] = useState('');
@@ -56,24 +65,36 @@ const TestimonialForm = ({ space, spaceid }) => {
   }
 }, [videoUrl]);
 
-  const handleVideoUpload = async (e) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "ml_default"); // Replace with your Cloudinary upload preset
-
-    try {
-      const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/dchbfnlct/video/upload`,
-        formData
-      );
-      const url = response.data.secure_url;
-      setVideoUrl(url);
-      console.log("Video uploaded successfully:", url);
-    } catch (error) {
-      console.error("Video upload failed:", error);
-    }
+const handleVideoUpload = async (e) => {
+  const file = e.target.files[0];
+  const params = {
+    Bucket: 'testimonialhub.raw.videos',
+    Key: `${spaceid}/${file.name}`, // Using spaceid to create a folder structure
+    Body: file, // Set the permissions
+    ContentType: file.type,
   };
+
+  try {
+    const data = await s3.upload(params).promise();
+    const originalUrl = data.Location; // Get the uploaded video URL
+    
+
+    const fileName = file.name.split('.').slice(0, -1).join('.'); // Remove the extension from file name
+    const baseURL = `https://s3.us-east-1.amazonaws.com/production.testimonialhub/${spaceid}`;
+
+    const videoUrls = {
+      "360": `${baseURL}/${fileName}-video-360p.mp4`,
+      "480": `${baseURL}/${fileName}-video-480p.mp4`,
+      "720": `${baseURL}/${fileName}-video-720p.mp4`
+    };
+
+    setVideoUrl(videoUrls);
+
+    console.log("Video uploaded successfully:", url);
+  } catch (error) {
+    console.error("Video upload failed:", error);
+  }
+};
 
   const togglePopup = () => setIsPopupOpen(!isPopupOpen); // Toggle popup
   const toggleVideoPopup = () => setIsVideoPopupOpen(!isVideoPopupOpen);
