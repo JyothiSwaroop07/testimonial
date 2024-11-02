@@ -21,7 +21,7 @@ const TestimonialForm = ({ space, spaceid }) => {
 
   const notify = () => toast("Testimonial Sent... You can close this window...");
 
-  console.log(space);
+  
   const handleSubmit = async () => {
     const testimonialId = crypto.randomUUID();
     try {
