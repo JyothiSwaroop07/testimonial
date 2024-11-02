@@ -78,8 +78,10 @@ const handleVideoUpload = async (e) => {
     const data = await s3.upload(params).promise();
     const originalUrl = data.Location; // Get the uploaded video URL
     
-
-    const fileName = file.name.split('.').slice(0, -1).join('.'); // Remove the extension from file name
+    
+    const fileName = file.name;
+    
+     // Remove the extension from file name
     const baseURL = `https://s3.us-east-1.amazonaws.com/production.testimonialhub/${spaceid}`;
 
     const videoUrls = {
