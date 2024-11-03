@@ -78,21 +78,17 @@ const handleVideoUpload = async (e) => {
     const data = await s3.upload(params).promise();
     const originalUrl = data.Location; // Get the uploaded video URL
     
-    
+    console.log("inside method ");
     const fileName = file.name;
     
      // Remove the extension from file name
     const baseURL = `https://s3.us-east-1.amazonaws.com/production.testimonialhub/${spaceid}`;
 
-    const videoUrls = {
-      "360": `${baseURL}/${fileName}-video-360p.mp4`,
-      "480": `${baseURL}/${fileName}-video-480p.mp4`,
-      "720": `${baseURL}/${fileName}-video-720p.mp4`
-    };
+    const videoUrls = `${baseURL}/${fileName}/master.m3u8`;
 
     setVideoUrl(videoUrls);
 
-    console.log("Video uploaded successfully:", url);
+    console.log("Video uploaded successfully:", videoUrls);
   } catch (error) {
     console.error("Video upload failed:", error);
   }
