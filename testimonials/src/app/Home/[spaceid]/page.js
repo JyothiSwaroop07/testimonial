@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { deleteDoc } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import { useAuth } from "@/lib/useAuth";
 import { auth } from "../../../lib/firebase";
@@ -11,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import Sample from "@/app/components/Sample/Sample";
+import { BsCollection } from "react-icons/bs";
 
 import mansoryfixed from './mansoryfixed.png';
 import carousels from './carousels.png';
@@ -118,6 +120,19 @@ const SpaceDetails = ({ params }) => {
     };
     getUserIdAndFetchSpace();
   }, [spaceid]);
+
+  const handleDeleteTestimonial = async (testimonialId) => {
+    try {
+      await deleteDoc(doc(db, "testimonials", testimonialId)); // Delete the document from Firestore
+      toast.success("Testimonial deleted successfully!");
+      
+      // Refresh the testimonials list after deletion
+      fetchSpaceTestimonials();
+    } catch (error) {
+      console.error("Error deleting testimonial:", error);
+      toast.error("Failed to delete testimonial.");
+    }
+  };
 
   if (loading) {
     return (
@@ -366,6 +381,24 @@ const SpaceDetails = ({ params }) => {
       )
   }
 
+  const NoTestimonials = ({ router }) => (
+    <div className="flex flex-col justify-start items-center mt-32 mx-auto w-[80vw]">
+      <BsCollection className="text-3xl text-[#091057] mb-4" />
+      <h2 className="text-m md:text-xl text-[#091057] font-bold">
+        No Testimonials yet
+      </h2>
+      <h3 className="text-sm md:text-m text-gray-600 font-semibold my-4">
+        copy the link of this space and share with people to collect testimonials
+      </h3>
+      <button
+        className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-500"
+        onClick={copylink}
+      >
+        Copy the form link
+      </button>
+    </div>
+  );
+
   return (
     <div className="">
       <nav className="bg-gray-900 p-4 fixed w-[100vw] z-10">
@@ -396,7 +429,8 @@ const SpaceDetails = ({ params }) => {
 
       {singleTestimonialEmbedPopup==true ? (<SingleTestimonialEmbedPopup/>) : singleTestimonialPopup==true ? (<SingleTestimonialPopup/>) : null}
 
-      <div className="hidden md:flex mt-[85px]">
+       <div> 
+        <div className="hidden md:flex mt-[85px]">
         
         <div className=" md:flex flex-col w-1/6 bg-gray-900 py-4 px-1 space-y-4 fixed h-[100vh]">
           {tabs.map((tab) => (
@@ -461,8 +495,10 @@ const SpaceDetails = ({ params }) => {
             </div>
         <div className="p-4 flex-1">
 
+        {filteredTestimonials.length==0 && <NoTestimonials/>}
+
         {filteredTestimonials.map((testimonial) => (
-              <TestimonialCard testimonial={testimonial} key={testimonial.id} fetchUpdatedTestimonial={handleFetchUpdatedTestimonial} />
+              <TestimonialCard testimonial={testimonial} key={testimonial.id} fetchUpdatedTestimonial={handleFetchUpdatedTestimonial} handleDeleteTestimonial={handleDeleteTestimonial} />
             ))
           }
         </div>
@@ -470,7 +506,7 @@ const SpaceDetails = ({ params }) => {
         <Sample testimonials={likedTestimonials} />
         </div> */}
       </div>
-      </div>
+      </div> 
 
 
 
@@ -509,14 +545,20 @@ const SpaceDetails = ({ params }) => {
           </div>
           
           <button className="text-center  h-[40px] bg-gray-900 rounded-lg self-center text-[white] m-2 p-2 hover:scale-105" onClick={copylink}>Copy Testimonial Form Link to Clipboard</button>
+          
+          {filteredTestimonials.length==0 && <NoTestimonials/>}
+          
           <div className="p-4">
             {filteredTestimonials.map((testimonial) => (
-              <TestimonialCard testimonial={testimonial} key={testimonial.id} />
+              <TestimonialCard testimonial={testimonial} key={testimonial.id} handleDeleteTestimonial={handleDeleteTestimonial}/>
             ))
           }
           </div>
         </div>
       </div>
+      </div>
+
+      
       
     </div>
   );

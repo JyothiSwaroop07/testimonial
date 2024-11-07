@@ -7,8 +7,10 @@ import { getDoc } from "firebase/firestore";
 import Image from "next/image";
 import texticon from './texticon.jpg';
 import videoicon from './videoicon.jpg'; 
+import { MdDeleteForever } from "react-icons/md";
 
-const TestimonialCard = ({ testimonial, fetchUpdatedTestimonial }) => {
+
+const TestimonialCard = ({ testimonial, fetchUpdatedTestimonial, handleDeleteTestimonial }) => {
 
   
   const [isLiked, setIsLiked] = useState(testimonial.isLiked);
@@ -32,6 +34,30 @@ const TestimonialCard = ({ testimonial, fetchUpdatedTestimonial }) => {
     
   }
 
+  const deleteTestimonial = async () => {
+    // Show confirmation dialog
+    const confirmed = window.confirm("Are you sure you want to delete this testimonial?");
+    
+    // If the user confirms, proceed with the deletion
+    if (confirmed) {
+      handleDeleteTestimonial(testimonial.id);
+  
+      try {
+        const testimonialRef = doc(db, "testimonials", testimonial.id);
+  
+        // Optionally, update testimonial fields if needed
+        await updateDoc(testimonialRef, { isLiked: newLikeStatus });
+  
+        const updatedSnap = await getDoc(testimonialRef);
+        if (updatedSnap.exists()) {
+          fetchUpdatedTestimonial(updatedSnap.data());
+        }
+      } catch (err) {
+        console.log("Error updating:", err);
+      }
+    }
+  };
+  
     return (
       <div className="border flex flex-col justify-between p-6 mb-4 rounded-lg shadow-md bg-gray-100 cursor-pointer hover:shadow-lg transition-shadow md:w-1/2 lg:w-3/4  h-[250px] mx-2">
         <div className="top flex justify-between">
@@ -63,10 +89,13 @@ const TestimonialCard = ({ testimonial, fetchUpdatedTestimonial }) => {
             <p className="text-gray-800 font-semibold text-sm mb-4 ">{testimonial.text}</p>
         </div>
         
-
+        
         <p className="text-normal text-sm mb-4 text-gray-700">{testimonial.name}</p>
-
         <p className="text-gray-600 text-sm mb-4 ">{testimonial.createdAt}</p>
+
+        <button className="ml-auto text-2xl" onClick={deleteTestimonial}>
+          <MdDeleteForever/>
+        </button>
       </div>
     );
   };

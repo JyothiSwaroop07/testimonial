@@ -142,7 +142,7 @@ useEffect(() => {
 };
 
 const Card = ({ title, icon, count }) => (
-  <div className="bg-white shadow-md rounded-lg flex flex-col justify-between gap-6 p-8 md:p-9">
+  <div className="bg-white shadow-md rounded-lg flex flex-col justify-between gap-6 p-8 md:p-9 hover:scale-105">
     <div className="flex justify-between items-center gap-12">
       <h3 className="text-md font-semibold text-gray-700">{title}</h3>
       {icon}
@@ -172,11 +172,11 @@ const NoSpaces = ({ router }) => (
 
 const SpacesList = ({ spaces, router }) => (
   <div className="flex flex-col items-center">
-    <div className="cards flex flex-col lg:flex-row lg:flex-wrap lg:justify-center mx-auto gap-10">
+    <div className="cards flex flex-col lg:flex-row lg:flex-wrap lg:justify-center mx-auto gap-10 ">
       {spaces.map((space, index) => (
         <div
           key={space.id}  
-          className="bg-white w-80 h-30 shadow-md rounded-lg flex flex-col justify-between gap-6 p-10 md:p-12 cursor-pointer"
+          className="bg-white w-80 h-30 shadow-md rounded-lg flex flex-col justify-between gap-6 p-10 md:p-12 cursor-pointer hover:scale-105"
           onClick={() => router.push(`/Home/${space.id}`)}
         >
           <div className="flex justify-between items-center gap-8">
